@@ -16,7 +16,7 @@ class FrameProcessor
 {
 public:
     FrameProcessor();
-    void process(Mat*);
+    vector<vector<Point> > process(Mat*);
 private:
     vector<vector<Point> > findSquares4(Mat *, vector<Vec4i> *);
     double angle(Point *, Point *, Point *);

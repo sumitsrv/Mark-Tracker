@@ -1,13 +1,16 @@
 #include "frameprocessor.h"
+#include <iostream>
 
 FrameProcessor::FrameProcessor()
 {
 }
 
-void FrameProcessor::process(Mat *frame)
+vector<vector<Point> > FrameProcessor::process(Mat *frame)
 {
     vector<Vec4i> hierarchy;
-    drawSquares(frame, findSquares4(frame, &hierarchy), hierarchy);
+    vector<vector<Point> > square = findSquares4(frame, &hierarchy);
+    drawSquares(frame, square, hierarchy);
+    return square;
 }
 
 double FrameProcessor::angle( Point* pt1, Point* pt2, Point* pt0 )
@@ -34,7 +37,7 @@ vector<vector<Point> > FrameProcessor::findSquares4( Mat* img, vector<Vec4i> *hi
     Mat* gray = new Mat( sz, 8, 1 );
     Mat* tgray;
 
-    double s, t, ang[4];
+    double s, t;
 
     // select the maximum ROI in the image
     // with the width and height divisible by 2
@@ -92,7 +95,6 @@ vector<vector<Point> > FrameProcessor::findSquares4( Mat* img, vector<Vec4i> *hi
 
                 if( result[k].size() == 4 && area > 400 && area < 100000 && isContourConvex(result[k]) ) {
                     s=0;
-                    ang[0] = 0, ang[1] = 0, ang[2] = 0, ang[3] = 0 ;
                     for( i = 0; i < 4; i++ ) {
                         // find minimum angle between joint
                         // edges (maximum of cosine)
@@ -102,7 +104,6 @@ vector<vector<Point> > FrameProcessor::findSquares4( Mat* img, vector<Vec4i> *hi
                             t = fabs(angle(&result[k].at(i),&result[k].at((i+2)%4),&result[k].at((i+3)%4)));
                         }
                         s = s > t ? s : t;
-                        ang[i] = t;
                     }
 
                     // vertices to resultant sequence

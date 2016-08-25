@@ -2,15 +2,16 @@
 
 TrackingManager::TrackingManager()
 {
+    wnd_name = "MarkTracker";
     vc = new VideoCapture();
     if( !vc->isOpened() )
     {
-        vc->set(CV_CAP_PROP_FPS, 30.0);
         vc->set(CV_CAP_PROP_FRAME_HEIGHT, 480.0);
         vc->set(CV_CAP_PROP_FRAME_WIDTH, 640.0);
         vc->open( CV_CAP_ANY );
     }
-    namedWindow("Frame", WINDOW_NORMAL);
+    namedWindow(wnd_name, CV_WINDOW_OPENGL | CV_WINDOW_AUTOSIZE);
+    resizeWindow(wnd_name, vc->get(CV_CAP_PROP_FRAME_WIDTH), vc->get(CV_CAP_PROP_FRAME_HEIGHT));
 }
 
 bool TrackingManager::getFrame()
@@ -29,5 +30,5 @@ void TrackingManager::releaseCamera()
 
 void TrackingManager::renderFrame()
 {
-    imshow("Frame", frame);
+    imshow(wnd_name, frame);
 }
